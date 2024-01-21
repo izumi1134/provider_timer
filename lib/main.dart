@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,30 +29,39 @@ class MyHomePage extends StatelessWidget {
       create: (_) => CountModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('カウンター'),
+          title: const Text('カウンター'),
         ),
-        body: CountBody(),
+        body: Consumer<CountModel>(builder: (context, model, child) {
+          return CountBody(
+            counter: model.counter,
+            secondCounter: model.secondCounter,
+          );
+        }),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              heroTag: 'add',
-              onPressed: () {
-                context.read<CountModel>().incrementCounter();
-              },
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            ),
+            Consumer<CountModel>(builder: (context, model, child) {
+              return FloatingActionButton(
+                heroTag: 'add',
+                onPressed: () {
+                  context.read<CountModel>().incrementCounter();
+                },
+                tooltip: 'Increment',
+                child: const Icon(Icons.add),
+              );
+            }),
             const SizedBox(height: 16),
-            FloatingActionButton(
-              heroTag: 'fav',
-              onPressed: () {
-                context.read<CountModel>().incrementSecondCounter();
-              },
-              tooltip: 'Increment',
-              child: const Icon(Icons.favorite),
-            ),
+            Consumer<CountModel>(builder: (context, model, child) {
+              return FloatingActionButton(
+                heroTag: 'fav',
+                onPressed: () {
+                  context.read<CountModel>().incrementSecondCounter();
+                },
+                tooltip: 'Increment',
+                child: const Icon(Icons.favorite),
+              );
+            }),
           ],
         ),
       ),
@@ -61,7 +70,13 @@ class MyHomePage extends StatelessWidget {
 }
 
 class CountBody extends StatelessWidget {
-  const CountBody({super.key});
+  CountBody({
+    Key? key,
+    required this.counter,
+    required this.secondCounter,
+  }) : super(key: key);
+  final int counter;
+  final int secondCounter;
 
   @override
   Widget build(BuildContext context) {
@@ -72,21 +87,13 @@ class CountBody extends StatelessWidget {
           const Text(
             'You have pushed the button this many times:',
           ),
-          Consumer<CountModel>(
-            builder: (context, model, child) {
-              return Text(
-                '${model.counter}',
-                style: Theme.of(context).textTheme.headlineMedium,
-              );
-            },
+          Text(
+            '${counter}',
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
-          Consumer<CountModel>(
-            builder: (context, model, child) {
-              return Text(
-                '${model.secondCounter}',
-                style: Theme.of(context).textTheme.headlineMedium,
-              );
-            },
+          Text(
+            '${secondCounter}',
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         ],
       ),
