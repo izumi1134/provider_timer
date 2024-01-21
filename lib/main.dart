@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,14 @@ class MyHomePage extends StatelessWidget {
             const SizedBox(height: 16),
             Consumer<CountModel>(builder: (context, model, child) {
               return FloatingActionButton(
-                heroTag: 'fav',
                 onPressed: () {
-                  context.read<CountModel>().incrementSecondCounter();
+                  final currentCounter =
+                      context.select<CountModel, int>((model) => model.counter);
+                  if (currentCounter > 1) {
+                    countModel.incrementSecondCounter();
+                  }
                 },
-                tooltip: 'Increment',
-                child: const Icon(Icons.favorite),
+                child: Text('increment Second Counter'),
               );
             }),
           ],
@@ -80,6 +82,7 @@ class CountBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final countModel = context.read<CountModel>();
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
