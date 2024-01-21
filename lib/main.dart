@@ -100,3 +100,29 @@ class CountBody extends StatelessWidget {
     );
   }
 }
+
+//class CountText extends StatelessWidget {
+// const CountText({Key? key}) : super(key: key);
+
+//final model = context.watch<CountModel>();
+
+// @override
+//Widget build(BuildContext context) {
+//  return Consumer<CountModel>(
+//  builder: (context, model, child) {
+//  return Column(
+//    children: [
+//  Text(
+//    '${model.counter}',
+//    style: Theme.of(context).textTheme.headlineMedium,
+//   ),
+//  Text(
+//   '${model.secondCounter}',
+//   style: Theme.of(context).textTheme.headlineMedium,
+//   ),
+//   ],
+//   );
+//  },
+// );
+// }
+//}
