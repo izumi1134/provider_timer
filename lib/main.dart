@@ -34,7 +34,7 @@ class MyHomePage extends StatelessWidget {
         body: Consumer<CountModel>(builder: (context, model, child) {
           return CountBody(
             counter: model.counter,
-            secondCounter: model.secondCounter,
+            textColor: model.currentColor,
           );
         }),
         floatingActionButton: Column(
@@ -54,14 +54,11 @@ class MyHomePage extends StatelessWidget {
             const SizedBox(height: 16),
             Consumer<CountModel>(builder: (context, model, child) {
               return FloatingActionButton(
+                heroTag: 'fav',
                 onPressed: () {
-                  final currentCounter =
-                      context.select<CountModel, int>((model) => model.counter);
-                  if (currentCounter > 1) {
-                    countModel.incrementSecondCounter();
-                  }
+                  context.read<CountModel>().updateColor();
                 },
-                child: Text('increment Second Counter'),
+                child: const Icon(Icons.favorite),
               );
             }),
           ],
@@ -72,17 +69,16 @@ class MyHomePage extends StatelessWidget {
 }
 
 class CountBody extends StatelessWidget {
-  CountBody({
+  const CountBody({
     Key? key,
     required this.counter,
-    required this.secondCounter,
+    required this.textColor,
   }) : super(key: key);
   final int counter;
-  final int secondCounter;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
-    final countModel = context.read<CountModel>();
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -90,13 +86,8 @@ class CountBody extends StatelessWidget {
           const Text(
             'You have pushed the button this many times:',
           ),
-          Text(
-            '${counter}',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          Text(
-            '${secondCounter}',
-            style: Theme.of(context).textTheme.headlineMedium,
+          CountText(
+            textColor: textColor,
           ),
         ],
       ),
@@ -104,28 +95,25 @@ class CountBody extends StatelessWidget {
   }
 }
 
-//class CountText extends StatelessWidget {
-// const CountText({Key? key}) : super(key: key);
-
-//final model = context.watch<CountModel>();
-
-// @override
-//Widget build(BuildContext context) {
-//  return Consumer<CountModel>(
-//  builder: (context, model, child) {
-//  return Column(
-//    children: [
-//  Text(
-//    '${model.counter}',
-//    style: Theme.of(context).textTheme.headlineMedium,
-//   ),
-//  Text(
-//   '${model.secondCounter}',
-//   style: Theme.of(context).textTheme.headlineMedium,
-//   ),
-//   ],
-//   );
-//  },
-// );
-// }
-//}
+class CountText extends StatelessWidget {
+  CountText({Key? key, required this.textColor}) : super(key: key);
+  final Color textColor;
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CountModel>(
+      builder: (context, model, child) {
+        return Column(
+          children: [
+            Text(
+              '${model.counter}',
+              style: TextStyle(
+                color: textColor,
+                fontSize: 30,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
